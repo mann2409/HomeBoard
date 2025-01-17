@@ -14,6 +14,7 @@ import 'react-native-reanimated';
 import LoginScreen from './components/LoginScreen';
 import 'react-native-get-random-values';
 import AddTransactionModal from './components/AddTransactionScreen';
+import HomeAddressScreen  from './components/HomeAddressScreen';
 
 const Stack = createStackNavigator();
 
@@ -21,16 +22,17 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Items in my Fridge" component={FridgeItemsScreen} />
         <Stack.Screen name="AddItemScreen" component={AddItemScreen} />
-        <Stack.Screen name="Groceries" component={GroceryScreen} />
+        <Stack.Screen name="Grocery List" component={GroceryScreen} />
         <Stack.Screen name="To-Do List" component={ToDoListScreen} />
         <Stack.Screen name="Meals" component={MealsScreen} />
         <Stack.Screen name="Events" component={Calendar} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Finances" component={Finances} />
+        <Stack.Screen name="Home Address" component={HomeAddressScreen} />
         <Stack.Screen name="AddTransaction" component={AddTransactionModal} options={{ title: 'Add Transaction' }}/>
       </Stack.Navigator>
     </NavigationContainer>

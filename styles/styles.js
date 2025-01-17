@@ -447,7 +447,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3,
   },
-
+  addButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  addButton: {
+    backgroundColor: '#264e70',
+    padding: 10,
+    borderRadius: 50,
+},
 
 
 });

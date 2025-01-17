@@ -1,3 +1,5 @@
+
+import moment from 'moment'; // Ensure moment.js is installed
 import { MaterialIcons } from '@expo/vector-icons';
 // import { FontAwesome5 } from '@expo/vector-icons';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
@@ -92,4 +94,20 @@ export const getEventIcon = (eventName) => {
     return <MaterialIcons name="event" size={30} color="#4845d2" />;
 };
 
+
+export const formatExpiryDate = (inputDate) => {
+    // Parse the input date
+    const input = moment(inputDate, 'YYYY-MM-DD');
+    const today = moment(); // Get today's date
+    const differenceInDays = input.diff(today, 'days'); // Calculate the difference in days
+
+    // Determine the output string
+    if (differenceInDays > 0) {
+        return `Expires in ${differenceInDays} day${differenceInDays === 1 ? '' : 's'}`;
+    } else if (differenceInDays === 0) {
+        return 'Expires today';
+    } else {
+        return `Expired ${Math.abs(differenceInDays)} day${Math.abs(differenceInDays) === 1 ? '' : 's'} ago`;
+    }
+};
 

@@ -88,7 +88,7 @@ export default function HomeScreen() {
                     </TouchableOpacity>
 
                     {/* Grocery List Section */}
-                    <TouchableOpacity onPress={() => navigation.navigate('Groceries')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Grocery List')}>
                         <View style={styles.section}>
                             <Text style={styles.sectionTitle}>Grocery List</Text>
                             <View style={styles.row}>

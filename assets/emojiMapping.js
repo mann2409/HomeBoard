@@ -2,8 +2,12 @@ const emojiMapping = {
     milk: '🥛',
     bread: '🍞',
     cheese: '🧀',
+    corn: '🌽',
+    capsicum: '🫑',
     apple: '🍎',
     banana: '🍌',
+    bacon: '🥓',
+    kebab: '🍢',
     chicken: '🍗',
     // chicken_snichtzel: '🍗',
     lettuce: '🥬',
@@ -29,7 +33,8 @@ const emojiMapping = {
     blueberries: '🫐',
     strawberries: '🍓',
     paneer: '🧀',
-    prawns: '🍤'  // Cheese emoji for paneer
+    prawns: '🍤',  // Cheese emoji for paneer
+    tomato: '🍅'
 };
 
 export default emojiMapping;

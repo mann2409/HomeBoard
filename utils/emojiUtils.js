@@ -1,17 +1,38 @@
 import emojiMapping from '../assets/emojiMapping';
 
 export const getEmojiForItem = (itemName) => {
-    const normalizedItem = itemName.toLowerCase().replace(/\s+/g, '_');  // almond milk -> almond_milk
+    if (!itemName) return '🛒'; // Return default emoji if itemName is undefined or empty
 
-    // Keyword-based emoji detection
-    if (itemName.toLowerCase().includes('chicken')) {
-        return emojiMapping['chicken'];  // Return chicken emoji for any chicken-related item
+    // Normalize the item name
+    const normalizedItem = itemName.toLowerCase().replace(/\s+/g, '_'); // "Almond Milk" -> "almond_milk"
+
+    // Check for exact match in the emoji mapping
+    if (emojiMapping[normalizedItem]) {
+        return emojiMapping[normalizedItem];
     }
 
-    // Exact match or fallback to second word (e.g., milk from almond milk)
-    return (
-        emojiMapping[normalizedItem] ||
-        emojiMapping[itemName.toLowerCase().split(' ')[1]] ||  // fallback to second word (milk)
-        '🛒'  // default emoji
-    );
+    // Check for individual word matches if no exact match is found
+    const words = itemName.toLowerCase().split(' ');
+    for (const word of words) {
+        if (emojiMapping[word]) {
+            return emojiMapping[word];
+        }
+    }
+
+    // Fallback to keyword matching for broader detection
+    const keywords = [
+        { keyword: 'chicken', emoji: emojiMapping['chicken'] },
+        { keyword: 'kebab', emoji: emojiMapping['kebab'] },
+        { keyword: 'tomato', emoji: emojiMapping['tomato'] },
+        { keyword: 'corn', emoji: emojiMapping['corn'] },
+    ];
+
+    for (const { keyword, emoji } of keywords) {
+        if (itemName.toLowerCase().includes(keyword)) {
+            return emoji;
+        }
+    }
+
+    // Final fallback: default emoji
+    return '🛒';
 };

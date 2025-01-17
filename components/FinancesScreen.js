@@ -14,6 +14,7 @@ import TransactionsSection from '../components/TransactionsSection';
 import { calculateTotalAmount } from '../utils/transactionUtils';
 import { getTransactions } from '../services/FinancesAPI';
 import moment from 'moment';
+import { LinearGradient } from 'expo-linear-gradient'; // Import LinearGradient
 
 const FinanceScreen = ({ navigation, route }) => {
     const [refreshing, setRefreshing] = useState(false);
@@ -89,41 +90,45 @@ const FinanceScreen = ({ navigation, route }) => {
     };
 
     return (
-        <View style={styles.container}>
-            {isProcessing && (
-                <View style={styles.loader}>
-                    <ActivityIndicator size="large" color="#4845d2" />
-                </View>
-            )}
-            <View>
-                <View style={styles.header}>
-                    <Text style={styles.headerTitle}>Finance Overview</Text>
-                    <TouchableOpacity
-                        style={styles.addButton}
-                        onPress={() =>
-                            navigation.navigate('AddTransaction', {
-                                onGoBack: () => navigation.setParams({ refresh: true }),
-                            })
-                        }
-                    >
-                        <Text style={styles.addButtonText}>Add</Text>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={styles.cardsContainer}>
-                    <View style={styles.card}>
-                        <Text style={styles.cardTitle}>{`${currentMonthYear} Spending`}</Text>
-                        <Text style={styles.cardValueSpending}>-${totalSpending}</Text>
+        <LinearGradient
+            colors={['#220b4e', '#81e9e6']} // Gradient colors
+            style={{ flex: 1 }} // Full-screen gradient
+        >
+            <View style={styles.container}>
+                {isProcessing && (
+                    <View style={styles.loader}>
+                        <ActivityIndicator size="large" color="#4845d2" />
                     </View>
-                    <View style={styles.card}>
-                        <Text style={styles.cardTitle}>{`${currentMonthYear} Income`}</Text>
-                        <Text style={styles.cardValue}>$3,400</Text>
+                )}
+                <View>
+                    <View style={styles.header}>
+                        <Text style={styles.headerTitle}>Finance Overview</Text>
+                        <TouchableOpacity
+                            style={styles.addButton}
+                            onPress={() =>
+                                navigation.navigate('AddTransaction', {
+                                    onGoBack: () => navigation.setParams({ refresh: true }),
+                                })
+                            }
+                        >
+                            <Text style={styles.addButtonText}>Add</Text>
+                        </TouchableOpacity>
                     </View>
-                </View>
 
-                <View style={styles.graphContainer}>
-                    <Text style={styles.graphTitle}>Spending Trend</Text>
-                    <BarChart
+                    <View style={styles.cardsContainer}>
+                        <View style={styles.card}>
+                            <Text style={styles.cardTitle}>{`${currentMonthYear} Spending`}</Text>
+                            <Text style={styles.cardValueSpending}>-${totalSpending}</Text>
+                        </View>
+                        <View style={styles.card}>
+                            <Text style={styles.cardTitle}>{`${currentMonthYear} Income`}</Text>
+                            <Text style={styles.cardValue}>$3,400</Text>
+                        </View>
+                    </View>
+
+                    <View style={styles.graphContainer}>
+                        <Text style={styles.graphTitle}>Spending Trend</Text>
+                        {/* <BarChart
                         data={{
                             labels: generatePastSixMonths(),
                             datasets: [{ data: monthlyData }],
@@ -140,24 +145,50 @@ const FinanceScreen = ({ navigation, route }) => {
                             labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
                         }}
                         showValuesOnTopOfBars
-                    />
-                </View>
-            </View>
+                    /> */}
+                        <BarChart
+                            data={{
+                                labels: generatePastSixMonths(), // Labels for the months
+                                datasets: [{ data: generateMonthlyTotals(transactions) }], // Data for each bar
+                            }}
+                            width={Dimensions.get('window').width - 40} // Width of the chart
+                            height={220} // Height of the chart
+                            yAxisLabel="$"
+                            chartConfig={{
+                                backgroundColor: '#fff',
+                                backgroundGradientFrom: '#81e9e6',
+                                backgroundGradientTo: '#220b4e',
+                                decimalPlaces: 0, // No decimal points
+                                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                            }}
+                            showValuesOnTopOfBars
+                            fromZero // Start Y-axis at zero
+                            onDataPointClick={({ index, value }) => {
+                                const selectedMonth = generatePastSixMonths()[index]; // Get the month based on index
+                                console.log(`Clicked on month: ${selectedMonth}, Value: ${value}`);
+                                navigation.navigate('DetailsScreen', { month: selectedMonth, value }); // Navigate to another screen
+                            }}
+                        />
 
-            <ScrollView
-                style={styles.transactionsContainer}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={fetchTransactions}
-                        colors={['#6200ee']}
-                        tintColor="#6200ee"
-                    />
-                }
-            >
-                <TransactionsSection transactions={transactions} />
-            </ScrollView>
-        </View>
+                    </View>
+                </View>
+
+                <ScrollView
+                    style={styles.transactionsContainer}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={fetchTransactions}
+                            colors={['#6200ee']}
+                            tintColor="#6200ee"
+                        />
+                    }
+                >
+                    <TransactionsSection transactions={transactions} />
+                </ScrollView>
+            </View>
+        </LinearGradient>
     );
 };
 

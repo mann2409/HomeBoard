@@ -7,9 +7,10 @@ import { showDeleteConfirmation } from '../components/DeleteConfirmation';
 import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 import { getEmojiForItem } from '../utils/emojiUtils';  // Import utility function
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { LinearGradient } from 'expo-linear-gradient'; // Import LinearGradient
 
 export default function GroceryScreen() {
-    const [todoItems, setTodoItems] = useState([]);
+    const [groceryItems, setgroceryItems] = useState([]);
     const [filteredItems, setFilteredItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isProcessing, setIsProcessing] = useState(false);  // Global processing state
@@ -25,7 +26,7 @@ export default function GroceryScreen() {
                 setIsProcessing(true);
                 setLoading(true);
                 const data = await fetchgroceries();
-                setTodoItems(data);
+                setgroceryItems(data);
                 setFilteredItems(data);
                 setIsProcessing(false);
             } catch (err) {
@@ -42,9 +43,9 @@ export default function GroceryScreen() {
     const handleSearch = (query) => {
         setSearchQuery(query);
         if (query.trim() === '') {
-            setFilteredItems(todoItems);
+            setFilteredItems(groceryItems);
         } else {
-            const filtered = todoItems.filter(item =>
+            const filtered = groceryItems.filter(item =>
                 item.ItemName.toLowerCase().includes(query.toLowerCase())
             );
             setFilteredItems(filtered);
@@ -52,9 +53,9 @@ export default function GroceryScreen() {
     };
 
     const handleSave = async () => {
-        const newId = todoItems.length > 0 ? Math.max(...todoItems.map(item => item.Id)) + 1 : 1;
+        const newId = groceryItems.length > 0 ? Math.max(...groceryItems.map(item => item.Id)) + 1 : 1;
         if (newItem.trim()) {
-            const newTodo = {
+            const newgrocery = {
                 Id: newId,
                 ItemName: newItem,
                 ExpDate: 'No Expiry Date',
@@ -64,10 +65,10 @@ export default function GroceryScreen() {
             setModalVisible(false);  // Close modal immediately
             setIsProcessing(true);  // Start processing
             try {
-                const response = await savegroceries(newTodo);
+                const response = await savegroceries(newgrocery);
                 if (response.ok) {
                     const updatedData = await fetchgroceries();
-                    setTodoItems(updatedData);
+                    setgroceryItems(updatedData);
                     setFilteredItems(updatedData);
                 } else {
                     console.error('Failed to save to-do item');
@@ -92,7 +93,7 @@ export default function GroceryScreen() {
             const response = await updategroceries(updatedItem);
             if (response.ok) {
                 const updatedData = await fetchgroceries();
-                setTodoItems(updatedData);
+                setgroceryItems(updatedData);
                 setFilteredItems(updatedData);
             } else {
                 console.error('Failed to update to-do item');
@@ -116,7 +117,7 @@ export default function GroceryScreen() {
                 const response = await updategroceries(deleteItem);
                 if (response.ok) {
                     const updatedData = await fetchgroceries();
-                    setTodoItems(updatedData);
+                    setgroceryItems(updatedData);
                     setFilteredItems(updatedData);
                 } else {
                     console.error('Failed to delete to-do item');
@@ -171,59 +172,69 @@ export default function GroceryScreen() {
     // };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.topBar}>
-                <TextInput
-                    style={styles.searchInput}
-                    placeholder="Search Shopping list"
-                    value={searchQuery}
-                    onChangeText={handleSearch}
+        <LinearGradient
+            colors={['#220b4e', '#81e9e6']} // Gradient colors
+            style={{ flex: 1 }} // Full-screen gradient
+        >
+            <View style={styles.container}>
+                <View style={styles.topBar}>
+                    <TextInput
+                        style={styles.searchInput}
+                        placeholder="Search Shopping list"
+                        value={searchQuery}
+                        onChangeText={handleSearch}
+                    />
+                    <TouchableOpacity
+                        style={styles.addButton}
+                        onPress={() => setModalVisible(true)}>
+                        <Text style={styles.addButtonText}>Add</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <FlatList
+                    data={filteredItems}
+                    keyExtractor={(item) => item.Id.toString()}
+                    renderItem={renderItem}
                 />
-            </View>
 
-            <FlatList
-                data={filteredItems}
-                keyExtractor={(item) => item.Id.toString()}
-                renderItem={renderItem}
-            />
-
-            {/* Add Button */}
-            <View style={styles.tabBar}>
+                {/* Add Button */}
+                {/* <View style={styles.tabBar}>
                 <TouchableOpacity
                     style={styles.actionButton}
                     onPress={() => setModalVisible(true)}>
                     <MaterialIcons name="edit" size={24} color="white" />
                     <Text style={styles.actionText}>Add</Text>
                 </TouchableOpacity>
-            </View>
+            </View> */}
 
-            {/* Add Modal */}
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => setModalVisible(false)}>
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <TextInput
-                            placeholder="Enter to-do item"
-                            value={newItem}
-                            onChangeText={setNewItem}
-                            style={styles.input}
-                        />
-                        <View style={styles.buttonContainer}>
-                            <Button title="Save" onPress={handleSave} />
-                            <Button title="Cancel" onPress={() => setModalVisible(false)} />
+                {/* Add Modal */}
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => setModalVisible(false)}>
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalContent}>
+                            <TextInput
+                                placeholder="Enter to-do item"
+                                value={newItem}
+                                onChangeText={setNewItem}
+                                style={styles.input}
+                            />
+                            <View style={styles.buttonContainer}>
+                                <Button title="Save" onPress={handleSave} />
+                                <Button title="Cancel" onPress={() => setModalVisible(false)} />
+                            </View>
                         </View>
                     </View>
-                </View>
-            </Modal>
+                </Modal>
 
-            {isProcessing && (
-                <View style={styles.overlay}>
-                    <ActivityIndicator size="large" color="white" />
-                </View>
-            )}
-        </View>
+                {isProcessing && (
+                    <View style={styles.overlay}>
+                        <ActivityIndicator size="large" color="white" />
+                    </View>
+                )}
+            </View>
+        </LinearGradient>
     );
 }

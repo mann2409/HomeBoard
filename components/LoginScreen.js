@@ -15,7 +15,7 @@ const LoginScreen = ({ navigation }) => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       Alert.alert('Welcome', `Logged in as ${userCredential.user.email}`);
-      navigation.navigate('Home');
+      navigation.navigate('Home Address');
     } catch (error) {
       Alert.alert('Error', error.message);
     }

@@ -9,17 +9,18 @@ export async function fetchItems() {
     // console.log('API Response:', data);  // Log to verify the structure
 
     if (!Array.isArray(data) || data.length === 0) {
-      throw new Error('No Fridge items found');
+      // throw new Error('No Fridge items found');
     }
-
+    console.log('Items expiry API:',data);
     return data;  // Directly return the array
+
   } catch (error) {
-    console.error('Error fetching groceries list:', error);
+    console.error('Error fetching fridge list:', error);
     throw error;
   }
 }
 
-// Save To-Do Item
+// Save fridge Item
 export async function saveItem(item) {
   try {
     const response = await fetch(`${ITESM_EXPIRY_API}/CreateItem`, {
@@ -41,7 +42,7 @@ export async function saveItem(item) {
   }
 }
 
-// Update To-Do Item
+// Update fridge Item
 export async function updateItem(item) {
   try {
     const response = await fetch(`${ITESM_EXPIRY_API}/DeleteItem`, {
@@ -54,11 +55,11 @@ export async function updateItem(item) {
 
     if (!response.ok) {
       const data = JSON.stringify(item);
-      throw new Error('Failed to update to-do item');
+      throw new Error('Failed to update fridge item');
     }
     return response;
   } catch (error) {
-    console.error('Error updating to-do item:', error);
+    console.error('Error updating fridge item:', error);
     throw error;
   }
 }
