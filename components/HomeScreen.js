@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient'; // Import LinearGradient
 import WeatherWidget from './WeatherWidget';
+import BinSchedule from './BinSchedule';
 import { MaterialIcons } from '@expo/vector-icons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 // import styles from '../styles/styles';
@@ -12,11 +13,13 @@ import { fetchgroceries } from '../services/GroceriesApi';
 import { getEmojiForItem } from '../utils/emojiUtils';  // Import utility function
 import { formatEventDate, trimToDate, formatTimeToHHMM } from '../utils/helper';
 
-export default function HomeScreen() {
+export default function HomeScreen({route}) {
     const navigation = useNavigation();
     const [todoItems, setTodoItems] = useState([]);
     const [latestGroceriesItems, setGroceryItems] = useState([]);
     const [calEvents, setCalendarEvents] = useState([]);
+
+    const { schedule } = route.params || {}; // Retrieve the schedule data passed from HomeAddressScreen
 
     // Fetch to-do items on screen focus
     useFocusEffect(
@@ -76,6 +79,10 @@ export default function HomeScreen() {
                         </View>
                     </TouchableOpacity>
 
+                    {/* Bin Schedule */}
+                    <View style={styles.section}>
+                        <BinSchedule schedule={schedule} />
+                    </View>
                     {/* Expiring Soon Section */}
                     <TouchableOpacity onPress={() => navigation.navigate('Items in my Fridge')}>
                         <View style={styles.section}>
